@@ -1,0 +1,68 @@
+typedef struct TreeNode *Tree;
+struct TreeNode {
+    ElementType Element;
+    Tree  Left;
+    Tree  Right;
+};
+
+struct ListNode {
+  Tree val;
+  List next;
+}* List;
+//typedef struct ListNode *List;
+
+List push(Tree node, List rear) {
+  if (node == NULL || rear == NULL) {
+    return NULL;
+  }
+
+  List newNode = malloc(sizeof(struct ListNode));
+  newNode->val = node;
+  newNode->next = NULL;
+  rear->next = newNode;
+  return newNode;
+}
+
+Tree pop(List header) {
+  if (header == NULL ||header->next == NULL) {
+    return NULL;
+  }
+  List node = header->next;
+  Tree val = node->val;
+  header->next = node->next;
+  free(node);
+
+  return val;
+}
+
+typedef List Tree;
+
+void Level_order ( Tree T, void (*visit)(Tree ThisNode) ) {
+  if (T == NULL) {
+    return;
+  }
+  Tree list[MaxTree + 1];
+  Tree* header = list;
+  //Tree rear = header;
+
+  // List header = malloc(sizeof(struct ListNode));
+  // if (header == NULL) {
+  //   return;
+  // }
+  // header->next = NULL;
+  Tree* rear = header + 1;
+  *header = T;
+  while (header != rear) {
+    Tree node = *header;
+    header++;
+    visit(node);
+    if (node->Left) {
+      *rear = node->Left;
+      rear++;
+    }
+    if (node->Right) {
+      *rear = node->Right;
+      rear++;
+    }
+  }
+}
