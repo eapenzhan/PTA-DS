@@ -1,0 +1,60 @@
+typedef int ElementType;
+#define MinData -1
+
+typedef struct HeapStruct *PriorityQueue;
+struct HeapStruct {
+    ElementType  *Elements;
+    int Capacity;
+    int Size;
+};
+
+void Insert( ElementType X, PriorityQueue H )
+{
+    int p = ++H->Size;
+    H->Elements[p] = X;
+    PercolateUp( p, H );
+}
+
+ElementType DeleteMin( PriorityQueue H )
+{
+    ElementType MinElement;
+    MinElement = H->Elements[1];
+    H->Elements[1] = H->Elements[H->Size--];
+    PercolateDown( 1, H );
+    return MinElement;
+}
+
+void swap(int p, ElementType * e) {
+  if (p <= 1) {
+    return;
+  }
+  ElementType temp = e[p];
+  e[p] = e[p / 2];
+  e[p / 2] = temp;
+}
+
+void PercolateUp( int p, PriorityQueue H ) {
+  while (p!= 1 && H->Elements[p] < H->Elements[p / 2]) {
+    swap(p, H->Elements);
+    p = p / 2;
+  }
+}
+void PercolateDown( int p, PriorityQueue H ) {
+  int flag;
+  do {
+    int min = H->Elements[p];
+    flag = 0;
+    if (H->Size > p * 2 && H->Elements[p * 2] < min) {
+      min = H->Elements[p * 2];
+      flag = 1;
+    }
+    if (H->Size > p * 2 + 1 && H->Elements[p * 2 + 1] < min) {
+      min = H->Elements[p * 2];
+      flag = 2;
+    }
+    if (flag) {
+      p = p * 2 + flag - 1;
+      swap(p , H->Elements);
+    }
+  } while(flag);
+}
