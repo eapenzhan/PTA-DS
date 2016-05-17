@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #define MaxVertices 10  /* maximum number of vertices */
 typedef int Vertex;     /* vertices are numbered from 0 to MaxVertices-1 */
 typedef struct VNode *PtrToVNode;
@@ -64,7 +67,7 @@ void StronglyConnectedComponents( Graph G, void (*visit)(Vertex V) ) {
   }
 
   for(int i = 0; i < G->NumOfVertices; i++) {
-    PtrToVNode node = G->Array + i;
+    PtrToVNode node = *(G->Array + i);
     // node = node->Next;
     while (node) {
       mat[i][node->Vert] = 1;
@@ -115,4 +118,34 @@ void StronglyConnectedComponents( Graph G, void (*visit)(Vertex V) ) {
     }
   }
   free(mat);
+}
+
+Graph ReadG(); /* details omitted */
+
+void PrintV( Vertex V )
+{
+    printf("%d ", V);
+}
+
+int main()
+{
+    Graph G = ReadG();
+    StronglyConnectedComponents( G, PrintV );
+    return 0;
+}
+
+Graph ReadG() {
+    Graph g = malloc(sizeof(struct GNode));
+    scanf("%d%d", &((*g).NumOfVertices), &(g->NumOfEdges));
+    g->Array = calloc(g->NumOfVertices, sizeof(PtrToVNode));
+    for (int i = 0; i < g->NumOfEdges; i++) {
+        int a,b;
+        scanf("%d%d", &a, &b);
+        PtrToVNode v = malloc(sizeof(struct VNode));
+        v->Vert = b;
+        v->Next = (g->Array[a])->Next;
+        (g->Array[a])->Next = v;
+    }
+
+    return g;
 }
